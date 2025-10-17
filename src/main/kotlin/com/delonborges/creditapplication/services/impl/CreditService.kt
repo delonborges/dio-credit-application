@@ -1,6 +1,7 @@
 package com.delonborges.creditapplication.services.impl
 
 import com.delonborges.creditapplication.entities.Credit
+import com.delonborges.creditapplication.exceptions.NotFoundException
 import com.delonborges.creditapplication.repositories.CreditRepository
 import com.delonborges.creditapplication.services.iface.ICreditService
 import org.springframework.stereotype.Service
@@ -21,7 +22,7 @@ class CreditService(
     }
 
     override fun findByCreditCode(customerId: Long, creditCode: UUID): Credit {
-        val credit = this.creditRepository.findByCreditCode(creditCode) ?: throw RuntimeException("Credit code $creditCode not found")
-        return if (credit.customer?.id == customerId) credit else throw RuntimeException("Customer not found")
+        val credit = this.creditRepository.findByCreditCode(creditCode) ?: throw NotFoundException("Credit code $creditCode not found")
+        return if (credit.customer?.id == customerId) credit else throw NotFoundException("Customer not found")
     }
 }
