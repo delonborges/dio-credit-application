@@ -15,7 +15,7 @@ class CustomerBuilder {
         password: String = "123456",
         street: String = "Rua das Tabajaras",
         zipCode: String = "00000-000",
-        id: Long? = 1L
+        id: Long? = null
     ) = Customer(
         firstName = firstName,
         lastName = lastName,

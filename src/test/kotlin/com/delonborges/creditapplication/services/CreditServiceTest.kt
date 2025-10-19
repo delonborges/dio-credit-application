@@ -17,11 +17,9 @@ import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.extension.ExtendWith
-import org.springframework.test.context.ActiveProfiles
 import java.util.*
 import kotlin.test.Test
 
-@ActiveProfiles("test")
 @ExtendWith(MockKExtension::class)
 class CreditServiceTest {
 
@@ -36,15 +34,12 @@ class CreditServiceTest {
 
     @Test
     fun `should create credit successfully`() {
-        //Given
-        val credit: Credit = CreditBuilder().buildCredit()
+        val credit: Credit = CreditBuilder().buildCredit(id = 1L, customer = CustomerBuilder().buildCustomer(id = 1L))
         every { customerService.findById(any()) } returns credit.customer!!
         every { creditRepository.save(any()) } returns credit
 
-        //When
         val creditSaved = creditService.save(credit)
 
-        //Then
         assertThat(creditSaved).isNotNull
         assertThat(creditSaved).isSameAs(credit)
         verify(exactly = 1) { customerService.findById(credit.customer?.id!!) }
@@ -53,7 +48,7 @@ class CreditServiceTest {
 
     @Test
     fun `should throw exception when customer is not found while saving credit`() {
-        val credit: Credit = CreditBuilder().buildCredit()
+        val credit: Credit = CreditBuilder().buildCredit(id = 1L, customer = CustomerBuilder().buildCustomer(id = 1L))
         every { customerService.findById(any()) } throws BusinessException("Id ${credit.customer?.id} not found")
 
         assertThatExceptionOfType(BusinessException::class.java).isThrownBy { creditService.save(credit) }.withMessage("Id ${credit.customer?.id} not found")
@@ -63,9 +58,9 @@ class CreditServiceTest {
 
     @Test
     fun `should find all credits by customer`() {
-        val customer: Customer = CustomerBuilder().buildCustomer()
-        val firstCredit: Credit = CreditBuilder().buildCredit(customer = customer)
-        val secondCredit: Credit = CreditBuilder().buildCredit(customer = customer)
+        val customer: Customer = CustomerBuilder().buildCustomer(id = 1L)
+        val firstCredit: Credit = CreditBuilder().buildCredit(id = 1L, customer = customer)
+        val secondCredit: Credit = CreditBuilder().buildCredit(id = 2L, customer = customer)
         every { creditRepository.findAllByCustomerId(customer.id!!) } returns listOf(firstCredit, secondCredit)
 
         val credits = creditService.findAllByCustomer(customer.id!!)
@@ -78,7 +73,7 @@ class CreditServiceTest {
 
     @Test
     fun `should find credit by credit code`() {
-        val credit: Credit = CreditBuilder().buildCredit()
+        val credit: Credit = CreditBuilder().buildCredit(id = 1L, customer = CustomerBuilder().buildCustomer(id = 1L))
         every { creditRepository.findByCreditCode(credit.creditCode) } returns credit
 
         val creditFound = creditService.findByCreditCode(credit.customer?.id!!, credit.creditCode)
@@ -123,13 +118,11 @@ class CreditServiceTest {
 
     @Test
     fun `should throw exception when credit customer id is null`() {
-        //Given
         val customer: Customer = CustomerBuilder().buildCustomer(id = null)
         val credit: Credit = CreditBuilder().buildCredit(customer = customer)
         val customerId = 1L
         every { creditRepository.findByCreditCode(credit.creditCode) } returns credit
 
-        //When & Then
         assertThatExceptionOfType(NotFoundException::class.java)
             .isThrownBy { creditService.findByCreditCode(customerId, credit.creditCode) }
             .withMessage("Customer not found")

@@ -10,7 +10,7 @@ import java.util.*
 class CreditBuilder {
 
     fun buildCredit(
-        id: Long = 1L,
+        id: Long? = null,
         creditCode: UUID = UUID.randomUUID(),
         creditValue: BigDecimal = BigDecimal.valueOf(1000.0),
         dayFirstInstallment: LocalDate = LocalDate.now(),

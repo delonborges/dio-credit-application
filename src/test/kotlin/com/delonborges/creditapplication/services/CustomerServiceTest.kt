@@ -15,11 +15,9 @@ import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.extension.ExtendWith
-import org.springframework.test.context.ActiveProfiles
 import java.util.*
 import kotlin.test.Test
 
-@ActiveProfiles("test")
 @ExtendWith(MockKExtension::class)
 class CustomerServiceTest {
 
@@ -31,14 +29,11 @@ class CustomerServiceTest {
 
     @Test
     fun `should create customer successfully`() {
-        //Given
         val customer: Customer = CustomerBuilder().buildCustomer()
         every { customerRepository.save(any()) } returns customer
 
-        //When
         val customerSaved = customerService.save(customer)
 
-        //Then
         assertThat(customerSaved).isNotNull
         assertThat(customerSaved).isSameAs(customer)
         verify(exactly = 1) { customerRepository.save(customer) }
