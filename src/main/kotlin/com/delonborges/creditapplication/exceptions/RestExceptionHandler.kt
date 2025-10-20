@@ -24,7 +24,7 @@ class RestExceptionHandler {
         return ResponseEntity(
             ExceptionDetails(
                 title = "Bad Request",
-                timeStamp = LocalDateTime.now(),
+                timestamp = LocalDateTime.now(),
                 status = HttpStatus.BAD_REQUEST.value(),
                 exception = ex.javaClass.toString(),
                 details = errors
@@ -37,7 +37,7 @@ class RestExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(
             ExceptionDetails(
                 title = "Conflict",
-                timeStamp = LocalDateTime.now(),
+                timestamp = LocalDateTime.now(),
                 status = HttpStatus.CONFLICT.value(),
                 exception = ex.javaClass.toString(),
                 details = mutableMapOf(ex.cause.toString() to ex.message)
@@ -50,7 +50,7 @@ class RestExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(
             ExceptionDetails(
                 title = "Unprocessable Entity",
-                timeStamp = LocalDateTime.now(),
+                timestamp = LocalDateTime.now(),
                 status = HttpStatus.UNPROCESSABLE_ENTITY.value(),
                 exception = ex.javaClass.toString(),
                 details = mutableMapOf(ex.cause.toString() to ex.message)
@@ -63,7 +63,7 @@ class RestExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
             ExceptionDetails(
                 title = "Not Found",
-                timeStamp = LocalDateTime.now(),
+                timestamp = LocalDateTime.now(),
                 status = HttpStatus.NOT_FOUND.value(),
                 exception = ex.javaClass.toString(),
                 details = mutableMapOf(ex.cause.toString() to ex.message)
